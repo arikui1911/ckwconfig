@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+require 'ckwconfig'
+require 'optparse'
+
+def with_output(path, &block)
+  path ? File.open(path, &block) : yield($stdout)
+end
+
+output = nil
+ARGV.options do |o|
+  o.on '-o', '--output=DEST', 'Assign output file' do |dest|
+    output = dest
+  end
+end
+ARGV.parse!
+
+cfg = CkwConfig.load(DATA)#(ARGF)
+with_output(output){|f| cfg.dump f }
+
